@@ -2,7 +2,7 @@
 
 """
 Pi Coin Configuration Constants
-This module contains constants related to the Pi Coin cryptocurrency.
+This module contains constants related to the Pi Coin cryptocurrency, configured as a stablecoin with a unique value.
 """
 
 # Pi Coin Symbol
@@ -24,7 +24,7 @@ PI_COIN_BLOCK_TIME = 10  # Average block time in seconds
 PI_COIN_MINING_DIFFICULTY = 1000  # Difficulty level for mining Pi Coin
 
 # Pi Coin Reward for Mining
-PI_COIN_MINING_REWARD = 12.5  # Reward for mining a block
+PI_COIN_MINING_REWARD = 0.0  # Reward for mining a block (Stablecoin typically does not use mining)
 
 # Pi Coin Network Protocol
 PI_COIN_NETWORK_PROTOCOL = "PoS"  # Proof of Stake
@@ -33,10 +33,10 @@ PI_COIN_NETWORK_PROTOCOL = "PoS"  # Proof of Stake
 PI_COIN_MAX_TRANSACTION_SIZE = 1_000_000  # Maximum transaction size in bytes
 
 # Pi Coin Decimals
-PI_COIN_DECIMALS = 18  # Number of decimal places for Pi Coin
+PI_COIN_DECIMALS = 2  # Number of decimal places for Pi Coin
 
 # Pi Coin Genesis Block Timestamp
-PI_COIN_GENESIS_BLOCK_TIMESTAMP = "2023-01-01T00:00:00Z"  # Timestamp of the genesis block
+PI_COIN_GENESIS_BLOCK_TIMESTAMP = "2025-01-01T00:00:00Z"  # Timestamp of the genesis block
 
 # Pi Coin Governance Model
 PI_COIN_GOVERNANCE_MODEL = "Decentralized"  # Governance model for Pi Coin
@@ -62,5 +62,20 @@ PI_COIN_API_KEY_EXPIRATION = 3600  # API key expiration time in seconds
 # Pi Coin Regulatory Compliance
 PI_COIN_KYC_REQUIRED = True  # Whether KYC is required for transactions
 PI_COIN_COMPLIANCE_JURISDICTIONS = ["US", "EU", "UK"]  # Jurisdictions for compliance
+
+# Pi Coin Stability Mechanism
+PI_COIN_STABILITY_MECHANISM = "Collateralized"  # Mechanism to maintain stability (e.g., fiat-backed)
+PI_COIN_COLLATERAL_RATIO = 1.0  # Collateral ratio for maintaining value stability
+
+# Pi Coin Advanced Security Features
+PI_COIN_MULTI_SIG_REQUIRED = True  # Whether multi-signature is required for transactions
+PI_COIN_ANONYMITY_FEATURES = True  # Whether anonymity features are enabled for user privacy
+
+# Pi Coin Economic Model
+PI_COIN_INFLATION_RATE = 0.02  # Annual inflation rate for the stablecoin
+PI_COIN_BURN_RATE = 0.01  # Rate at which coins are burned to maintain value
+
+# Pi Coin Community Governance
+PI_COIN_VOTING_POWER = "Proportional"  # Voting power based on stake for governance decisions
 
 # Additional constants can be added here as needed
