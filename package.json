@@ -1,20 +1,37 @@
 {
   "name": "pi-backend",
-  "version": "0.1.3",
-  "main": "dist/index.js",
+  "version": "0.2.0",  // Incremented version
+  "description": "Backend for Pi Network applications, featuring user authentication and transaction handling.",
+  "main": "src/app.js",  // Updated main entry point
   "types": "dist/index.d.ts",
   "repository": "git@github.com:pi-apps/pi-nodejs.git",
   "homepage": "https://github.com/pi-apps/pi-nodejs",
-  "author": "Pi Core Team",
-  "license": "PiOS",
+  "author": "KOSASIH",
+  "license": "MIT",  // Updated license if applicable
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node src/app.js",  // Added start script
+    "test": "mocha src/tests/**/*.test.js",  // Added test script
+    "lint": "eslint .",  // Optional: add linting script
+    "format": "prettier --write .",  // Optional: add formatting script
+    "dev": "nodemon src/app.js"  // Optional: add development script with nodemon
   },
   "devDependencies": {
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "mocha": "^8.2.1",  // Added testing library
+    "chai": "^4.3.4",  // Added assertion library
+    "nodemon": "^2.0.15",  // Optional: for development
+    "eslint": "^8.0.0",  // Optional: for linting
+    "prettier": "^2.5.1"  // Optional: for code formatting
   },
   "dependencies": {
     "axios": "^1.2.3",
-    "stellar-sdk": "^10.4.1"
+    "stellar-sdk": "^10.4.1",
+    "express": "^4.17.1",  // Added Express framework
+    "bcrypt": "^5.0.1",  // Added bcrypt for password hashing
+    "jsonwebtoken": "^8.5.1",  // Added JWT for authentication
+    "mongoose": "^5.10.9",  // Added Mongoose for MongoDB
+    "express-rate-limit": "^5.3.0",  // Added rate limiting middleware
+    "ws": "^7.4.6"  // Added WebSocket support
   }
-}
+  }
