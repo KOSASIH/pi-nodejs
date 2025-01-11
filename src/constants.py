@@ -1,5 +1,3 @@
-// src/constants.js
-
 /**
  * Pi Network Configuration Constants
  * This module contains constants related to the Pi Network cryptocurrency, configured as a stablecoin with advanced features.
@@ -99,6 +97,14 @@ const PI_COIN_API_RATE_LIMIT = parseInt(process.env.PI_COIN_API_RATE_LIMIT) || 1
 const PI_COIN_LOGGING_LEVEL = process.env.PI_COIN_LOGGING_LEVEL || "INFO";  // Default logging level
 const PI_COIN_MONITORING_INTERVAL = parseInt(process.env.PI_COIN_MONITORING_INTERVAL) || 60;  // Monitoring interval in seconds
 
+// Multi-Signature Wallet Support
+const PI_COIN_MULTI_SIG_SUPPORT = process.env.PI_COIN_MULTI_SIG_SUPPORT === 'true';  // Enable multi-signature wallet functionality
+const PI_COIN_MIN_SIGNERS = parseInt(process.env.PI_COIN_MIN_SIGNERS) || 2;  // Minimum number of signers for multi-signature transactions
+
+// Decentralized Governance
+const PI_COIN_DECENTRALIZED_GOVERNANCE = process.env.PI_COIN_DECENTRALIZED_GOVERNANCE === 'true';  // Enable decentralized governance features
+const PI_COIN_GOVERNANCE_PROPOSAL_PERIOD = parseInt(process.env.PI_COIN_GOVERNANCE_PROPOSAL_PERIOD) || 604800;  // Proposal period in seconds, 1 week
+
 // Validation Function
 const validateConstants = () => {
     const errors = [];
@@ -109,6 +115,7 @@ const validateConstants = () => {
     if (PI_COIN_MINING_REWARD <= 0) errors.push("PI_COIN_MINING_REWARD must be greater than 0");
     if (PI_COIN_STAKING_REWARD < 0) errors.push("PI_COIN_STAKING_REWARD cannot be negative");
     if (PI_COIN_MINIMUM_STAKE <= 0) errors.push("PI_COIN_MINIMUM_STAKE must be greater than 0");
+    if (PI_COIN_MIN_SIGNERS < 1) errors.push("PI_COIN_MIN_SIGNERS must be at least 1");
 
     if (errors.length > 0) {
         logger.error("Validation Errors: ", errors);
@@ -180,4 +187,8 @@ module.exports = {
     PI_COIN_API_RATE_LIMIT,
     PI_COIN_LOGGING_LEVEL,
     PI_COIN_MONITORING_INTERVAL,
+    PI_COIN_MULTI_SIG_SUPPORT,
+    PI_COIN_MIN_SIGNERS,
+    PI_COIN_DECENTRALIZED_GOVERNANCE,
+    PI_COIN_GOVERNANCE_PROPOSAL_PERIOD,
 };
