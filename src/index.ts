@@ -14,6 +14,7 @@ export default class PiNetwork {
     this.API_KEY = apiKey;
     this.myKeypair = StellarSdk.Keypair.fromSecret(walletPrivateSeed);
     this.axiosOptions = options;
+    this.currentPayment = null;
   }
 
   public createPayment = async (paymentData: PaymentArgs): Promise<string> => {
@@ -21,20 +22,23 @@ export default class PiNetwork {
 
     const axiosClient = getAxiosClient(this.API_KEY, this.axiosOptions);
     const body = { payment: paymentData };
-    const response = await axiosClient.post(`/v2/payments`, body);
-    this.currentPayment = response.data;
 
-    return response.data.identifier;
+    try {
+      const response = await axiosClient.post(`/v2/payments`, body);
+      this.currentPayment = response.data;
+      return response.data.identifier;
+    } catch (error) {
+      this.handleError(error, 'Creating payment failed');
+    }
   };
 
   public submitPayment = async (paymentId: string): Promise<string> => {
     try {
-      if (!this.currentPayment || this.currentPayment.identifier != paymentId) {
+      if (!this.currentPayment || this.currentPayment.identifier !== paymentId) {
         this.currentPayment = await this.getPayment(paymentId);
         const txid = this.currentPayment?.transaction?.txid;
         if (txid) {
-          const errorObject = { message: "This payment already has a linked txid", paymentId, txid };
-          throw new Error(JSON.stringify(errorObject));
+          throw new Error(`This payment already has a linked txid: ${txid}`);
         }
       }
 
@@ -46,26 +50,25 @@ export default class PiNetwork {
       } = this.currentPayment;
 
       const piHorizon = this.getHorizonClient(this.currentPayment.network);
-      const transactionData = {
-        amount,
-        paymentIdentifier,
-        fromAddress,
-        toAddress,
-      };
+      const transactionData = { amount, paymentIdentifier, fromAddress, toAddress };
 
       const transaction = await this.buildA2UTransaction(piHorizon, transactionData);
       const txid = await this.submitTransaction(piHorizon, transaction);
       return txid;
+    } catch (error) {
+      this.handleError(error, 'Submitting payment failed');
     } finally {
       this.currentPayment = null;
     }
   };
 
   public completePayment = async (paymentId: string, txid: string): Promise<PaymentDTO> => {
+    const axiosClient = getAxiosClient(this.API_KEY, this.axiosOptions);
     try {
-      const axiosClient = getAxiosClient(this.API_KEY, this.axiosOptions);
       const response = await axiosClient.post(`/v2/payments/${paymentId}/complete`, { txid });
       return response.data;
+    } catch (error) {
+      this.handleError(error, 'Completing payment failed');
     } finally {
       this.currentPayment = null;
     }
@@ -73,15 +76,21 @@ export default class PiNetwork {
 
   public getPayment = async (paymentId: string): Promise<PaymentDTO> => {
     const axiosClient = getAxiosClient(this.API_KEY, this.axiosOptions);
-    const response = await axiosClient.get(`/v2/payments/${paymentId}`);
-    return response.data;
+    try {
+      const response = await axiosClient.get(`/v2/payments/${paymentId}`);
+      return response.data;
+    } catch (error) {
+      this.handleError(error, 'Fetching payment failed');
+    }
   };
 
   public cancelPayment = async (paymentId: string): Promise<PaymentDTO> => {
+    const axiosClient = getAxiosClient(this.API_KEY, this.axiosOptions);
     try {
-      const axiosClient = getAxiosClient(this.API_KEY, this.axiosOptions);
       const response = await axiosClient.post(`/v2/payments/${paymentId}/cancel`);
       return response.data;
+    } catch (error) {
+      this.handleError(error, 'Cancelling payment failed');
     } finally {
       this.currentPayment = null;
     }
@@ -89,13 +98,17 @@ export default class PiNetwork {
 
   public getIncompleteServerPayments = async (): Promise<Array<PaymentDTO>> => {
     const axiosClient = getAxiosClient(this.API_KEY, this.axiosOptions);
-    const response = await axiosClient.get("/v2/payments/incomplete_server_payments");
-    return response.data;
+    try {
+      const response = await axiosClient.get("/v2/payments/incomplete_server_payments");
+      return response.data;
+    } catch (error) {
+      this.handleError(error, 'Fetching incomplete server payments failed');
+    }
   };
 
   private validateSeedFormat = (seed: string): void => {
-    if (!seed.startsWith("S")) throw new Error("Wallet private seed must starts with 'S'");
-    if (seed.length !== 56) throw new Error("Wallet private seed must be 56-character long");
+    if (!seed.startsWith("S")) throw new Error("Wallet private seed must start with 'S'");
+    if (seed.length !== 56) throw new Error("Wallet private seed must be 56 characters long");
   };
 
   private validatePaymentData = (paymentData: PaymentArgs): void => {
@@ -146,7 +159,11 @@ export default class PiNetwork {
     transaction: StellarSdk.Transaction
   ): Promise<string> => {
     const txResponse = await piHorizon.submitTransaction(transaction);
-    // @ts-ignore
     return txResponse.id;
   };
-}
+
+  private handleError = (error: any, message: string): void => {
+    console.error(`${message}: ${error.message}`);
+    throw new Error(message);
+  };
+          }
